@@ -17,13 +17,20 @@ public class LoginService {
     @Inject
     private AccountDAO accountDAO;
 
+//    public Token login(Account user) throws LoginException {
+//        for (Account account : accountDAO.getAllAccounts()) {
+//            if (user.getPassword().equals(account.getPassword()) && user.getUser().equals(account.getUser())) {
+//                return tokenDAO.createNewToken(account.getUser());
+//            }
+//        }
+//        throw new LoginException("Uw logingegevens zijn onjuist!");
+//    }
+
     public Token login(Account user) throws LoginException {
-        for (Account account : accountDAO.getAllAcounts()) {
-            if (user.getPassword().equals(account.getPassword()) && user.getUser().equals(account.getUser())) {
-                return tokenDAO.createNewToken(account.getUser());
-            }
+        if(accountDAO.accountValidation(user.getUser(), user.getPassword())){
+            return tokenDAO.createNewToken(user.getUser());
         }
-        throw new LoginException("Uw logingegevens zijn incorrect!");
+        throw new LoginException("Uw logingegevens zijn onjuist!");
     }
 
 }

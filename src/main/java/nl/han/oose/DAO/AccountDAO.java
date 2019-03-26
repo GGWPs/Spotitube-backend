@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class AccountDAO {
 
     private ConnectionFactory connectionFactory;
@@ -18,7 +19,22 @@ public class AccountDAO {
         connectionFactory = new ConnectionFactory();
     }
 
-    public List<Account> getAllAcounts() {
+    public boolean accountValidation(String username, String password) {
+        try (Connection connection = connectionFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM account WHERE username = ? AND password = ?")) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    public List<Account> getAllAccounts() {
         List<Account> accounts = new ArrayList<>();
 
         try (Connection connection = connectionFactory.getConnection();
@@ -34,4 +50,5 @@ public class AccountDAO {
         }
         return accounts;
     }
+
 }

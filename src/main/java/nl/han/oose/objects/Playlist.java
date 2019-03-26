@@ -2,6 +2,8 @@ package nl.han.oose.objects;
 
 import java.util.List;
 
+
+
 public class Playlist{
     private int id;
     private String name;

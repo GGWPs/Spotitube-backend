@@ -29,7 +29,7 @@ public class PlaylistService {
         }
     }
 
-    public PlaylistAll getPlaylists(String token) throws AuthenticationException {
+    public PlaylistAll getAllPlaylists(String token) throws AuthenticationException {
         Token userToken = tokenDAO.getToken(token);
         if (tokenDAO.tokenValidation(userToken)) {
             return playlistDAO.getAllPlaylists(userToken);

@@ -12,8 +12,7 @@ public class Tracks {
     private String description;
     private boolean offlineAvailable;
 
-    public Tracks() {
-    }
+    public Tracks(){}
 
     public Tracks(long id, String title, String performer, long duration, String album, long playcount, String publicationDate, String description, boolean offlineAvailable) {
         this.id = id;

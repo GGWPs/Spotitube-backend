@@ -1,5 +1,6 @@
-package nl.han.oose;
+package nl.han.oose.endpoints;
 
+import nl.han.oose.LoginService;
 import nl.han.oose.objects.Account;
 
 import javax.inject.Inject;

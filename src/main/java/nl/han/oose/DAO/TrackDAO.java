@@ -23,7 +23,7 @@ public class TrackDAO {
 
         try (
                 Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM TRACK INNER JOIN tracksinplaylist ON id = track_id WHERE playlist_id = ?")
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM track INNER JOIN tracksinplaylist ON id = track_id WHERE playlist_id = ?")
         ) {
             statement.setInt(1, playlistId);
             ResultSet resultSet = statement.executeQuery();
@@ -41,28 +41,28 @@ public class TrackDAO {
         return tracksList;
     }
 
-    public TracksList getAllTracksNotInPlaylist(int playlistId) {
-        TracksList tracksList = new TracksList();
-
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM track WHERE id NOT IN(SELECT track_id FROM tracksinplaylist WHERE playlist_id = ?)")
-        ) {
-            statement.setInt(1, playlistId);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                try {
-                    tracksList = trackInfo(resultSet);
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return tracksList;
-    }
+//    public TracksList getAllTracksNotInPlaylist(int playlistId) {
+//        TracksList tracksList = new TracksList();
+//
+//        try (
+//                Connection connection = connectionFactory.getConnection();
+//                PreparedStatement statement = connection.prepareStatement("SELECT * FROM track WHERE id NOT IN(SELECT track_id FROM tracksinplaylist WHERE playlist_id = ?)")
+//        ) {
+//            statement.setInt(1, playlistId);
+//            ResultSet resultSet = statement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                try {
+//                    tracksList = trackInfo(resultSet);
+//                } catch (Exception e) {
+//                    System.out.println(e);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return tracksList;
+//    }
 
     private TracksList trackInfo(ResultSet resultSet) throws Exception {
         int id = resultSet.getByte("id");
@@ -71,9 +71,9 @@ public class TrackDAO {
         long duration = resultSet.getLong("duration");
         String album = resultSet.getString("album");
         long playcount = resultSet.getLong("playcount");
-        String publicationDate = resultSet.getString("publication_date");
+        String publicationDate = resultSet.getString("publicationDate");
         String description = resultSet.getString("description");
-        Boolean offlineAvailable = resultSet.getBoolean("offline_available");
+        Boolean offlineAvailable = resultSet.getBoolean("offlineAvailable");
 
         tracksList.getTracks().add(new Tracks(id, title, performer, duration, album, playcount, publicationDate, description, offlineAvailable));
         return tracksList;
@@ -82,7 +82,7 @@ public class TrackDAO {
     public void addTrackToPlaylist(int playlistId, Tracks tracks) {
         try (
                 Connection connection = connectionFactory.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO tracksinplaylist (playlist_id, track_id, offline_available) VALUES(?,?,?)");
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO tracksinplaylist (playlist_id, track_id, offlineAvailable) VALUES(?,?,?)");
         ) {
             preparedStatement.setInt(1, playlistId);
             preparedStatement.setLong(2, tracks.getId());

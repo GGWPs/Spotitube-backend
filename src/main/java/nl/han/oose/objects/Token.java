@@ -1,29 +1,29 @@
 package nl.han.oose.objects;
 
+
+
 public class Token {
-    private String username;
+    private String user;
     private String token;
 
-    public Token() {
-    }
+    public Token() {}
 
-    public Token(String token, String username) {
+    public Token(String token, String user) {
         this.token = token;
-        this.username = username;
+        this.user = user;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getToken() {
         return token;
     }
-
     public void setToken(String token) {
         this.token = token;
     }

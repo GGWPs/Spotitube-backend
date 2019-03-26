@@ -1,6 +1,7 @@
-package nl.han.oose;
+package nl.han.oose.endpoints;
 
 
+import nl.han.oose.PlaylistService;
 import nl.han.oose.objects.Playlist;
 import nl.han.oose.objects.Tracks;
 
@@ -20,7 +21,7 @@ public class PlaylistController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylist(@QueryParam("token") String token) {
         try {
-            return Response.ok().entity(playlistService.getPlaylists(token)).build();
+            return Response.ok().entity(playlistService.getAllPlaylists(token)).build();
         } catch (AuthenticationException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }

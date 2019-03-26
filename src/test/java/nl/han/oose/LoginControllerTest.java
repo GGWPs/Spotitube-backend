@@ -1,5 +1,6 @@
 package nl.han.oose;
 
+import nl.han.oose.endpoints.LoginController;
 import nl.han.oose.objects.Account;
 import nl.han.oose.objects.Token;
 import org.junit.Test;

@@ -3,24 +3,26 @@ package nl.han.oose.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class PlaylistAll {
 
-    private List<Playlist> playlists = new ArrayList<>();
+    private List<Playlist> allPlaylists = new ArrayList<>();
     private int length;
 
     public PlaylistAll() {}
 
-    public PlaylistAll(List<Playlist> playlists) {
-        this.playlists = playlists;
+    public PlaylistAll(List<Playlist> allPlaylists) {
+        this.allPlaylists = allPlaylists;
         this.length = 100;
     }
 
-    public List<Playlist> getPlaylists() {
-        return playlists;
+    public List<Playlist> getAllPlaylists() {
+        return allPlaylists;
     }
 
-    public void setPlaylists(List<Playlist> playlists) {
-        this.playlists = playlists;
+    public void setAllPlaylists(List<Playlist> allPlaylists) {
+        this.allPlaylists = allPlaylists;
     }
 
     public int getLength() {

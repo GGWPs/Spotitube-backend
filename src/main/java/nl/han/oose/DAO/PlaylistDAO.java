@@ -16,7 +16,7 @@ public class PlaylistDAO {
     private int playlistLength;
     private ConnectionFactory connectionFactory;
 
-    public PlaylistDAO() {
+    public PlaylistDAO(){
         connectionFactory = new ConnectionFactory();
     }
 
@@ -33,7 +33,7 @@ public class PlaylistDAO {
                 String name = resultSet.getString("name");
                 Boolean owner = resultSet.getBoolean("owner");
 
-                playlistAll.getPlaylists().add(new Playlist(id, name, owner, new ArrayList<>()));
+                playlistAll.getAllPlaylists().add(new Playlist(id, name, owner, new ArrayList<>()));
                 playlistLength += getLength(id);
             }
             playlistAll.setLength(playlistLength);
@@ -63,7 +63,7 @@ public class PlaylistDAO {
     public void editPlaylist(Playlist playlist) {
         try (
                 Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE playlist SET name = ? WHERE id = ?")
+                PreparedStatement statement = connection.prepareStatement("UPDATE playlist SET naam = ? WHERE id = ?")
         ) {
             statement.setString(1, playlist.getName());
             statement.setInt(2, playlist.getId());
@@ -88,11 +88,17 @@ public class PlaylistDAO {
     public void addPlaylist(Token token, Playlist playlist) {
         playlist.setOwner(true);
         try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO PLAYLIST (name, owner) VALUES (?, ?)")
+             PreparedStatement statement = connection.prepareStatement("select count(*) as total FROM playlist")
         ) {
-            statement.setString(1, playlist.getName());
-            statement.setBoolean(2, playlist.getOwner());
-            statement.execute();
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int newId = resultSet.getInt("total") + 1;
+                PreparedStatement insert = connection.prepareStatement("INSERT INTO playlist (id, name, owner) VALUES (?,?,?)");
+                insert.setInt(1, newId);
+                insert.setString(2, playlist.getName());
+                insert.setBoolean(3, playlist.getOwner());
+                insert.execute();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
