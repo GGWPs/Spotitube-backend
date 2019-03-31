@@ -20,17 +20,17 @@ public class PlaylistService {
     @Inject
     private TrackDAO trackDAO;
 
-    public TracksList getTracksFromPlaylist(String userToken, int playlistId) throws AuthenticationException {
-        Token token = tokenDAO.getToken(userToken);
-        if (tokenDAO.tokenValidation(token)) {
+    public TrackOverview getPlaylistTracks(String token, int playlistId) throws AuthenticationException {
+        Token userToken = tokenDAO.getTokenObject(token);
+        if (tokenDAO.tokenValidation(userToken)) {
             return trackDAO.getAllTracks(playlistId);
         } else {
             throw new AuthenticationException("Token incorrect");
         }
     }
 
-    public PlaylistAll getAllPlaylists(String token) throws AuthenticationException {
-        Token userToken = tokenDAO.getToken(token);
+    public PlaylistAll getPlaylists(String token) throws AuthenticationException {
+        Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             return playlistDAO.getAllPlaylists(userToken);
         } else {
@@ -40,7 +40,7 @@ public class PlaylistService {
 
 
     public PlaylistAll editPlaylist(String token, Playlist playlist) throws AuthenticationException {
-        Token userToken = tokenDAO.getToken(token);
+        Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             playlistDAO.editPlaylist(playlist);
             return playlistDAO.getAllPlaylists(userToken);
@@ -49,9 +49,8 @@ public class PlaylistService {
         }
     }
 
-
     public PlaylistAll deletePlaylist(String token, int playlistId) throws AuthenticationException {
-        Token userToken = tokenDAO.getToken(token);
+        Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             playlistDAO.deletePlaylist(playlistId);
             return playlistDAO.getAllPlaylists(userToken);
@@ -60,9 +59,8 @@ public class PlaylistService {
         }
     }
 
-
     public PlaylistAll addPlaylist(String token, Playlist playlist) throws AuthenticationException {
-        Token userToken = tokenDAO.getToken(token);
+        Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             playlistDAO.addPlaylist(userToken, playlist);
             return playlistDAO.getAllPlaylists(userToken);
@@ -71,11 +69,10 @@ public class PlaylistService {
         }
     }
 
-
-    public TracksList addTrackToPlaylist(String token, int playlistId, Tracks tracks) throws AuthenticationException {
-        Token userToken = tokenDAO.getToken(token);
+    public TrackOverview addTrackToPlaylist(String token, int playlistId, Track track) throws AuthenticationException {
+        Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
-            trackDAO.addTrackToPlaylist(playlistId, tracks);
+            trackDAO.addTrackToPlaylist(playlistId, track);
             return trackDAO.getAllTracks(playlistId);
         } else {
             throw new AuthenticationException("Token incorrect");
@@ -83,8 +80,8 @@ public class PlaylistService {
     }
 
 
-    public TracksList deleteTrack(String token, int playlistId, int trackId) throws AuthenticationException {
-        Token userToken = tokenDAO.getToken(token);
+    public TrackOverview deleteTrack(String token, int playlistId, int trackId) throws AuthenticationException {
+        Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             trackDAO.deleteTrack(playlistId, trackId);
             return trackDAO.getAllTracks(playlistId);
@@ -92,4 +89,5 @@ public class PlaylistService {
             throw new AuthenticationException("Token incorrect");
         }
     }
+
 }

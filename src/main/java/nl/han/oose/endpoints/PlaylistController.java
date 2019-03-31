@@ -3,7 +3,7 @@ package nl.han.oose.endpoints;
 
 import nl.han.oose.PlaylistService;
 import nl.han.oose.objects.Playlist;
-import nl.han.oose.objects.Tracks;
+import nl.han.oose.objects.Track;
 
 import javax.inject.Inject;
 import javax.naming.AuthenticationException;
@@ -21,7 +21,7 @@ public class PlaylistController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylist(@QueryParam("token") String token) {
         try {
-            return Response.ok().entity(playlistService.getAllPlaylists(token)).build();
+            return Response.ok().entity(playlistService.getPlaylists(token)).build();
         } catch (AuthenticationException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -44,7 +44,7 @@ public class PlaylistController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTracksFromPlaylist(@QueryParam("token") String token, @PathParam("id") final int id) {
         try {
-            return Response.status(Response.Status.OK).entity(playlistService.getTracksFromPlaylist(token, id)).build();
+            return Response.status(Response.Status.OK).entity(playlistService.getPlaylistTracks(token, id)).build();
         } catch (AuthenticationException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -74,10 +74,10 @@ public class PlaylistController {
     }
 
     @POST
-    @Path("/{id}/tracks")
+    @Path("/{playlistId}/tracks")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTrackToPlaylist(@QueryParam("token") String token, @PathParam("id") int playlistId, Tracks tracks) {
+    public Response addTrackToPlaylist(@QueryParam("token") String token, @PathParam("playlistId") int playlistId, Track tracks) {
         try {
             return Response.status(Response.Status.OK).entity(playlistService.addTrackToPlaylist(token, playlistId, tracks)).build();
         } catch (AuthenticationException e) {

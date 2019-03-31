@@ -1,7 +1,6 @@
 package nl.han.oose.objects;
 
 
-
 public class Account {
     private String user;
     private String password;

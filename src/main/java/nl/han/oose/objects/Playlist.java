@@ -2,13 +2,11 @@ package nl.han.oose.objects;
 
 import java.util.List;
 
-
-
 public class Playlist{
     private int id;
     private String name;
     private boolean owner;
-    private List<Tracks> tracks;
+    private List<Track> tracks;
 
     public Playlist(){}
 
@@ -18,7 +16,7 @@ public class Playlist{
         this.owner = owner;
     }
 
-    public Playlist(int id, String name, boolean owner, List<Tracks> tracks) {
+    public Playlist(int id, String name, boolean owner, List<Track> tracks) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -49,11 +47,11 @@ public class Playlist{
         this.owner = owner;
     }
 
-    public List<Tracks> getTracks(){
+    public List<Track> getTracks(){
         return tracks;
     }
 
-    public void setTracks(List<Tracks> tracks){
+    public void setTracks(List<Track> tracks){
         this.tracks = tracks;
     }
 

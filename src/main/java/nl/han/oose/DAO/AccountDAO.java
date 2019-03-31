@@ -15,8 +15,7 @@ public class AccountDAO {
 
     private ConnectionFactory connectionFactory;
 
-    public AccountDAO() {
-        connectionFactory = new ConnectionFactory();
+    public AccountDAO(){connectionFactory = new ConnectionFactory();
     }
 
     public boolean accountValidation(String username, String password) {
@@ -38,7 +37,7 @@ public class AccountDAO {
         List<Account> accounts = new ArrayList<>();
 
         try (Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM account")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM account")) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 String user = resultSet.getString("username");
@@ -49,6 +48,26 @@ public class AccountDAO {
             throw new RuntimeException(e);
         }
         return accounts;
+    }
+
+
+    public Account getAccount(String username) {
+        Account account = null;
+        try (Connection connection = connectionFactory.getConnection();
+                PreparedStatement getAccountStatement = connection.prepareStatement("SELECT * FROM ACCOUNT WHERE user = ?")) {
+            getAccountStatement.setString(1, username);
+            ResultSet accountResult = getAccountStatement.executeQuery();
+
+            while (accountResult.next()) {
+                String user = accountResult.getString("user");
+                String password = accountResult.getString("password");
+
+                account = new Account(user, password);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return account;
     }
 
 }

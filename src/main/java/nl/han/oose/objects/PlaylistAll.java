@@ -8,20 +8,19 @@ import java.util.List;
 public class PlaylistAll {
 
     private List<Playlist> allPlaylists = new ArrayList<>();
-    private int length;
+    private int length = 10;
 
     public PlaylistAll() {}
 
     public PlaylistAll(List<Playlist> allPlaylists) {
         this.allPlaylists = allPlaylists;
-        this.length = 100;
     }
 
-    public List<Playlist> getAllPlaylists() {
+    public List<Playlist> getPlaylists() {
         return allPlaylists;
     }
 
-    public void setAllPlaylists(List<Playlist> allPlaylists) {
+    public void setPlaylists(List<Playlist> allPlaylists) {
         this.allPlaylists = allPlaylists;
     }
 

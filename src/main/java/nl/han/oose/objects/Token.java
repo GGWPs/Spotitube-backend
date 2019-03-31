@@ -1,10 +1,8 @@
 package nl.han.oose.objects;
 
-
-
 public class Token {
-    private String user;
     private String token;
+    private String user;
 
     public Token() {}
 
@@ -16,7 +14,6 @@ public class Token {
     public String getUser() {
         return user;
     }
-
     public void setUser(String user) {
         this.user = user;
     }

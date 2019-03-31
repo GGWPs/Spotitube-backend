@@ -2,8 +2,8 @@ package nl.han.oose.DAO;
 
 
 import nl.han.oose.ConnectionFactory;
-import nl.han.oose.objects.Tracks;
-import nl.han.oose.objects.TracksList;
+import nl.han.oose.objects.Track;
+import nl.han.oose.objects.TrackOverview;
 
 import javax.inject.Inject;
 import java.sql.Connection;
@@ -13,13 +13,13 @@ import java.sql.SQLException;
 
 public class TrackDAO {
 
-    private TracksList tracksList = new TracksList();
+    private TrackOverview trackOverview = new TrackOverview();
 
     @Inject
     private ConnectionFactory connectionFactory;
 
-    public TracksList getAllTracks(int playlistId) {
-        TracksList tracksList = new TracksList();
+    public TrackOverview getAllTracks(int playlistId) {
+        TrackOverview trackOverview = new TrackOverview();
 
         try (
                 Connection connection = connectionFactory.getConnection();
@@ -30,7 +30,7 @@ public class TrackDAO {
 
             while (resultSet.next()) {
                 try {
-                    tracksList = trackInfo(resultSet);
+                    trackOverview = trackInfo(resultSet);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -38,56 +38,55 @@ public class TrackDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return tracksList;
+        return trackOverview;
     }
 
-//    public TracksList getAllTracksNotInPlaylist(int playlistId) {
-//        TracksList tracksList = new TracksList();
-//
-//        try (
-//                Connection connection = connectionFactory.getConnection();
-//                PreparedStatement statement = connection.prepareStatement("SELECT * FROM track WHERE id NOT IN(SELECT track_id FROM tracksinplaylist WHERE playlist_id = ?)")
-//        ) {
-//            statement.setInt(1, playlistId);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            while (resultSet.next()) {
-//                try {
-//                    tracksList = trackInfo(resultSet);
-//                } catch (Exception e) {
-//                    System.out.println(e);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return tracksList;
-//    }
+    public TrackOverview getAllTracksNotInPlaylist(int playlistId) {
+        TrackOverview trackOverview = new TrackOverview();
 
-    private TracksList trackInfo(ResultSet resultSet) throws Exception {
-        int id = resultSet.getByte("id");
+        try (
+                Connection connection = connectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM track WHERE id NOT IN(SELECT track_id FROM tracksinplaylist WHERE playlist_id = ?)")
+        ) {
+            statement.setInt(1, playlistId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                try {
+                    trackOverview = trackInfo(resultSet);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return trackOverview;
+    }
+
+    private TrackOverview trackInfo(ResultSet resultSet) throws Exception {
+        int id = resultSet.getInt("id");
         String title = resultSet.getString("title");
         String performer = resultSet.getString("performer");
-        long duration = resultSet.getLong("duration");
+        int duration = resultSet.getInt("duration");
         String album = resultSet.getString("album");
-        long playcount = resultSet.getLong("playcount");
+        int playcount = resultSet.getInt("playcount");
         String publicationDate = resultSet.getString("publicationDate");
         String description = resultSet.getString("description");
         Boolean offlineAvailable = resultSet.getBoolean("offlineAvailable");
 
-        tracksList.getTracks().add(new Tracks(id, title, performer, duration, album, playcount, publicationDate, description, offlineAvailable));
-        return tracksList;
+        trackOverview.getTracks().add(new Track(id, title, performer, duration, album, playcount, publicationDate, description, offlineAvailable));
+        return trackOverview;
     }
 
-    public void addTrackToPlaylist(int playlistId, Tracks tracks) {
+    public void addTrackToPlaylist(int playlistId, Track track) {
         try (
                 Connection connection = connectionFactory.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO tracksinplaylist (playlist_id, track_id, offlineAvailable) VALUES(?,?,?)");
         ) {
             preparedStatement.setInt(1, playlistId);
-            preparedStatement.setLong(2, tracks.getId());
-            preparedStatement.setBoolean(3, tracks.getOfflineAvailable());
-
+            preparedStatement.setInt(2, track.getId());
+            preparedStatement.setBoolean(3, track.getOfflineAvailable());
             preparedStatement.execute();
 
         } catch (SQLException e) {
@@ -98,8 +97,7 @@ public class TrackDAO {
     public void deleteTrack(int playlistId, int trackId) {
         try (
                 Connection connection = connectionFactory.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM tracksinplaylist WHERE playlist_id = ? AND track_id = ?");
-        ) {
+                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM tracksinplaylist WHERE playlist_id = ? AND track_id = ?")) {
             preparedStatement.setInt(1, playlistId);
             preparedStatement.setInt(2, trackId);
 
@@ -109,4 +107,3 @@ public class TrackDAO {
         }
     }
 }
-

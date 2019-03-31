@@ -16,7 +16,7 @@ public class PlaylistDAO {
     private int playlistLength;
     private ConnectionFactory connectionFactory;
 
-    public PlaylistDAO(){
+    public PlaylistDAO() {
         connectionFactory = new ConnectionFactory();
     }
 
@@ -33,7 +33,7 @@ public class PlaylistDAO {
                 String name = resultSet.getString("name");
                 Boolean owner = resultSet.getBoolean("owner");
 
-                playlistAll.getAllPlaylists().add(new Playlist(id, name, owner, new ArrayList<>()));
+                playlistAll.getPlaylists().add(new Playlist(id, name, owner, new ArrayList<>()));
                 playlistLength += getLength(id);
             }
             playlistAll.setLength(playlistLength);
@@ -63,8 +63,7 @@ public class PlaylistDAO {
     public void editPlaylist(Playlist playlist) {
         try (
                 Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE playlist SET naam = ? WHERE id = ?")
-        ) {
+                PreparedStatement statement = connection.prepareStatement("UPDATE playlist SET naam = ? WHERE id = ?")) {
             statement.setString(1, playlist.getName());
             statement.setInt(2, playlist.getId());
             statement.execute();
