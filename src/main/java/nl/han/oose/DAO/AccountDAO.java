@@ -1,73 +1,41 @@
 package nl.han.oose.DAO;
 
-import nl.han.oose.objects.Account;
 import nl.han.oose.ConnectionFactory;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.IntStream;
 
 
 public class AccountDAO {
 
     private ConnectionFactory connectionFactory;
 
-    public AccountDAO(){connectionFactory = new ConnectionFactory();
+    public AccountDAO() {
+        connectionFactory = new ConnectionFactory();
     }
 
     public boolean accountValidation(String username, String password) {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM account WHERE username = ? AND password = ?")) {
             statement.setString(1, username);
-            statement.setString(2, password);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(password.getBytes());
+            byte[] bytes = md.digest();
+            StringBuilder sb = new StringBuilder();
+            IntStream.range(0, bytes.length).forEach(i -> sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1)));
+            statement.setString(2, sb.toString());
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 return true;
             }
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
         return false;
     }
-
-    public List<Account> getAllAccounts() {
-        List<Account> accounts = new ArrayList<>();
-
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM account")) {
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                String user = resultSet.getString("username");
-                String password = resultSet.getString("password");
-                accounts.add(new Account(user, password));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return accounts;
-    }
-
-
-    public Account getAccount(String username) {
-        Account account = null;
-        try (Connection connection = connectionFactory.getConnection();
-                PreparedStatement getAccountStatement = connection.prepareStatement("SELECT * FROM ACCOUNT WHERE user = ?")) {
-            getAccountStatement.setString(1, username);
-            ResultSet accountResult = getAccountStatement.executeQuery();
-
-            while (accountResult.next()) {
-                String user = accountResult.getString("user");
-                String password = accountResult.getString("password");
-
-                account = new Account(user, password);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return account;
-    }
-
 }

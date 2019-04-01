@@ -1,9 +1,9 @@
-package nl.han.oose.endpoints;
+package nl.han.oose.controllers;
 
 
-import nl.han.oose.PlaylistService;
-import nl.han.oose.objects.Playlist;
-import nl.han.oose.objects.Track;
+import nl.han.oose.services.PlaylistService;
+import nl.han.oose.dto.Playlist;
+import nl.han.oose.dto.Track;
 
 import javax.inject.Inject;
 import javax.naming.AuthenticationException;

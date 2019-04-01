@@ -1,13 +1,14 @@
 package nl.han.oose;
 
-import nl.han.oose.endpoints.TrackController;
-import nl.han.oose.objects.Token;
-import nl.han.oose.objects.TrackOverview;
+import nl.han.oose.controllers.TrackController;
+import nl.han.oose.dto.Token;
+import nl.han.oose.dto.Tracks;
+import nl.han.oose.services.TrackService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -26,8 +27,8 @@ public class TrackControllerTest {
     @Test
     public void testReturnTracksNotInPlaylistOnCorrectToken() throws AuthenticationException {
         //SETUP
-        TrackOverview tracksOverview = new TrackOverview();
-        Token correctToken = new Token("1233-1234-1234", "testz");
+        Tracks tracksOverview = new Tracks();
+        Token correctToken = new Token("1233-1234-1234", "test");
 
         //TEST
         when(trackService.getAllTracksNotInPlaylist(any(), anyInt())).thenReturn(tracksOverview);

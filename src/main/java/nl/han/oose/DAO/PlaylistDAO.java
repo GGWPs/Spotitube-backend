@@ -2,9 +2,9 @@ package nl.han.oose.DAO;
 
 
 import nl.han.oose.ConnectionFactory;
-import nl.han.oose.objects.Playlist;
-import nl.han.oose.objects.PlaylistAll;
-import nl.han.oose.objects.Token;
+import nl.han.oose.dto.Playlist;
+import nl.han.oose.dto.PlaylistAll;
+import nl.han.oose.dto.Token;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +27,6 @@ public class PlaylistDAO {
                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM playlist")
         ) {
             ResultSet resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
                 int id = resultSet.getByte("id");
                 String name = resultSet.getString("name");

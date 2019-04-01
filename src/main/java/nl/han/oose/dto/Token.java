@@ -1,4 +1,4 @@
-package nl.han.oose.objects;
+package nl.han.oose.dto;
 
 public class Token {
     private String token;
@@ -13,9 +13,6 @@ public class Token {
 
     public String getUser() {
         return user;
-    }
-    public void setUser(String user) {
-        this.user = user;
     }
 
     public String getToken() {

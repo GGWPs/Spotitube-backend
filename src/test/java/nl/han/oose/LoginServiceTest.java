@@ -2,23 +2,27 @@ package nl.han.oose;
 
 import nl.han.oose.DAO.AccountDAO;
 import nl.han.oose.DAO.TokenDAO;
-import nl.han.oose.objects.Account;
-import nl.han.oose.objects.Token;
+import nl.han.oose.dto.Account;
+import nl.han.oose.dto.Token;
+import nl.han.oose.services.LoginService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.security.auth.login.LoginException;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static junit.framework.TestCase.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LoginServiceTest {
+
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -32,34 +36,37 @@ public class LoginServiceTest {
     @InjectMocks
     private LoginService sut;
 
+
     @Test
     public void testTokenIsCreatedWhenLoginIsCorrect() throws LoginException {
         //SETUP
         Account account = new Account("test", "test123");
         Token userToken = new Token("1234-1234-1234", "test");
-
-        //TEST
-        when(accountDAO.getAccount(any())).thenReturn(account);
+        when(accountDAO.accountValidation(any(),any())).thenReturn(true);
         when(tokenDAO.createNewToken(any())).thenReturn(userToken);
 
+        //TEST
+        Token token = sut.login(account);
+
         //VERIFY
-        assertEquals("1234-1234-1234", userToken.getToken());
-        assertEquals("test", userToken.getUser());
+        assertEquals("1234-1234-1234", token.getToken());
+        assertEquals("test", token.getUser());
     }
 
+
     @Test
-    public void testExceptionIsThrownWhenLoginIsIncorrect() throws LoginException {
+    public void testExceptionIsThrownWhenLoginIsIncorrect() throws LoginException{
         //SETUP
         thrown.expect(LoginException.class);
         thrown.expectMessage("Uw logingegevens zijn onjuist!");
 
         Account badAccount = new Account("test", "123test");
-        Account goodAccount = new Account("test", "test123");
 
         //TEST
-        when(accountDAO.getAccount(any())).thenReturn(goodAccount);
+        when(accountDAO.accountValidation(any(),any())).thenReturn(false);
 
         //VERIFY
         sut.login(badAccount);
+
     }
 }

@@ -1,9 +1,9 @@
-package nl.han.oose;
+package nl.han.oose.services;
 
 import nl.han.oose.DAO.AccountDAO;
 import nl.han.oose.DAO.TokenDAO;
-import nl.han.oose.objects.Account;
-import nl.han.oose.objects.Token;
+import nl.han.oose.dto.Account;
+import nl.han.oose.dto.Token;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -19,7 +19,7 @@ public class LoginService {
 
     public Token login(Account user) throws LoginException {
         if (accountDAO.accountValidation(user.getUser(), user.getPassword())) {
-            if(tokenDAO.checkToken(user.getUser())){
+            if (tokenDAO.checkToken(user.getUser())) {
                 return tokenDAO.retrieveToken(user.getUser());
             } else {
                 return tokenDAO.createNewToken(user.getUser());
@@ -27,5 +27,4 @@ public class LoginService {
         }
         throw new LoginException("Uw logingegevens zijn onjuist!");
     }
-
 }

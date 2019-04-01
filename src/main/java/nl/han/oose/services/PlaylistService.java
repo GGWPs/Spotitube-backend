@@ -1,10 +1,10 @@
-package nl.han.oose;
+package nl.han.oose.services;
 
 
 import nl.han.oose.DAO.PlaylistDAO;
 import nl.han.oose.DAO.TokenDAO;
 import nl.han.oose.DAO.TrackDAO;
-import nl.han.oose.objects.*;
+import nl.han.oose.dto.*;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public class PlaylistService {
     @Inject
     private TrackDAO trackDAO;
 
-    public TrackOverview getPlaylistTracks(String token, int playlistId) throws AuthenticationException {
+    public Tracks getPlaylistTracks(String token, int playlistId) throws AuthenticationException {
         Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             return trackDAO.getAllTracks(playlistId);
@@ -69,7 +69,7 @@ public class PlaylistService {
         }
     }
 
-    public TrackOverview addTrackToPlaylist(String token, int playlistId, Track track) throws AuthenticationException {
+    public Tracks addTrackToPlaylist(String token, int playlistId, Track track) throws AuthenticationException {
         Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             trackDAO.addTrackToPlaylist(playlistId, track);
@@ -79,8 +79,7 @@ public class PlaylistService {
         }
     }
 
-
-    public TrackOverview deleteTrack(String token, int playlistId, int trackId) throws AuthenticationException {
+    public Tracks deleteTrack(String token, int playlistId, int trackId) throws AuthenticationException {
         Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             trackDAO.deleteTrack(playlistId, trackId);

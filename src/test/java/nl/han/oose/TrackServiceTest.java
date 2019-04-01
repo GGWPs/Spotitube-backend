@@ -2,15 +2,16 @@ package nl.han.oose;
 
 import nl.han.oose.DAO.TokenDAO;
 import nl.han.oose.DAO.TrackDAO;
-import nl.han.oose.objects.Token;
-import nl.han.oose.objects.TrackOverview;
+import nl.han.oose.dto.Token;
+import nl.han.oose.dto.Tracks;
+import nl.han.oose.services.TrackService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 import javax.naming.AuthenticationException;
@@ -35,7 +36,7 @@ public class TrackServiceTest {
     @Test
     public void testGetTracksNotInPlaylistReturnsTrackOverviewIfTokenIsCorrect() throws AuthenticationException {
         //SETUP
-        TrackOverview tracksOverview = new TrackOverview();
+        Tracks tracksOverview = new Tracks();
         Token token = new Token("1234-1234-1234", "test");
 
         //TEST
@@ -47,12 +48,13 @@ public class TrackServiceTest {
         assertEquals(tracksOverview, sut.getAllTracksNotInPlaylist("123", 1));
     }
 
-    @Test(expected = AuthenticationException.class)
+    @Test
     public void testGetTracksNotInPlaylistReturnsExceptionIfTokenIsIncorrect() throws AuthenticationException {
         //SETUP
         Token token = new Token("1233-1234-1234", "test");
         thrown.expect(AuthenticationException.class);
         thrown.expectMessage("Token incorrect");
+
 
         //TEST
         when(tokenDAO.getTokenObject(anyString())).thenReturn(token);

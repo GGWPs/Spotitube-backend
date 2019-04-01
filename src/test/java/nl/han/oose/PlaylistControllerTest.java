@@ -1,10 +1,11 @@
 package nl.han.oose;
 
-import nl.han.oose.endpoints.PlaylistController;
-import nl.han.oose.objects.Playlist;
-import nl.han.oose.objects.PlaylistAll;
-import nl.han.oose.objects.Track;
-import nl.han.oose.objects.TrackOverview;
+import nl.han.oose.controllers.PlaylistController;
+import nl.han.oose.dto.Playlist;
+import nl.han.oose.dto.PlaylistAll;
+import nl.han.oose.dto.Track;
+import nl.han.oose.dto.Tracks;
+import nl.han.oose.services.PlaylistService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,7 +15,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 
 import javax.naming.AuthenticationException;
-import javax.security.auth.login.AccountNotFoundException;
 import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.assertEquals;
@@ -86,7 +86,7 @@ public class PlaylistControllerTest {
     @Test
     public void testGetTracksFromPlaylistOnCorrectToken() throws AuthenticationException {
         //SETUP
-        TrackOverview tracksOverview = new TrackOverview();
+        Tracks tracksOverview = new Tracks();
         when(playlistService.getPlaylistTracks(any(), anyInt())).thenReturn(tracksOverview);
 
         //TEST
@@ -164,7 +164,7 @@ public class PlaylistControllerTest {
     @Test
     public void testAddTrackToPlaylistOnCorrectToken() throws AuthenticationException {
         //SETUP
-        TrackOverview tracksOverview = new TrackOverview();
+        Tracks tracksOverview = new Tracks();
         when(playlistService.addTrackToPlaylist(any(), anyInt(), any(Track.class))).thenReturn(tracksOverview);
 
         //TEST
@@ -189,7 +189,7 @@ public class PlaylistControllerTest {
     @Test
     public void testDeleteTrackOnCorrectToken() throws AuthenticationException {
         //SETUP
-        TrackOverview tracksOverview = new TrackOverview();
+        Tracks tracksOverview = new Tracks();
 
         when(playlistService.deleteTrack(any(), anyInt(), anyInt())).thenReturn(tracksOverview);
         //TEST

@@ -1,15 +1,13 @@
 package nl.han.oose.DAO;
 
 import nl.han.oose.ConnectionFactory;
-import nl.han.oose.objects.Token;
+import nl.han.oose.dto.Token;
 
 import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class TokenDAO {

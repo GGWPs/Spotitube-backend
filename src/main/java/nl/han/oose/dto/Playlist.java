@@ -1,4 +1,4 @@
-package nl.han.oose.objects;
+package nl.han.oose.dto;
 
 import java.util.List;
 
@@ -9,12 +9,6 @@ public class Playlist{
     private List<Track> tracks;
 
     public Playlist(){}
-
-    public Playlist(int id, String name, boolean owner) {
-        this.id = id;
-        this.name = name;
-        this.owner = owner;
-    }
 
     public Playlist(int id, String name, boolean owner, List<Track> tracks) {
         this.id = id;
@@ -27,16 +21,8 @@ public class Playlist{
         return id;
     }
 
-    public void setId(int id){
-        this.id = id;
-    }
-
     public String getName(){
         return name;
-    }
-
-    public void setName(String name){
-        this.name = name;
     }
 
     public boolean getOwner(){

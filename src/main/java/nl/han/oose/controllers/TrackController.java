@@ -1,6 +1,6 @@
-package nl.han.oose.endpoints;
+package nl.han.oose.controllers;
 
-import nl.han.oose.TrackService;
+import nl.han.oose.services.TrackService;
 
 import javax.inject.Inject;
 import javax.naming.AuthenticationException;

@@ -1,4 +1,4 @@
-package nl.han.oose.objects;
+package nl.han.oose.dto;
 
 
 public class Account {

@@ -1,7 +1,7 @@
-package nl.han.oose.endpoints;
+package nl.han.oose.controllers;
 
-import nl.han.oose.LoginService;
-import nl.han.oose.objects.Account;
+import nl.han.oose.services.LoginService;
+import nl.han.oose.dto.Account;
 
 import javax.inject.Inject;
 import javax.security.auth.login.LoginException;

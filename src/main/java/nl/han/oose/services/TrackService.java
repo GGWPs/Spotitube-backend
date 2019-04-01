@@ -1,9 +1,9 @@
-package nl.han.oose;
+package nl.han.oose.services;
 
 import nl.han.oose.DAO.TokenDAO;
 import nl.han.oose.DAO.TrackDAO;
-import nl.han.oose.objects.Token;
-import nl.han.oose.objects.TrackOverview;
+import nl.han.oose.dto.Token;
+import nl.han.oose.dto.Tracks;
 
 import javax.inject.Inject;
 import javax.naming.AuthenticationException;
@@ -15,11 +15,11 @@ public class TrackService {
     @Inject
     private TrackDAO trackDAO;
 
-    public TrackOverview getAllTracksNotInPlaylist(String token, int playlistId) throws AuthenticationException {
+    public Tracks getAllTracksNotInPlaylist(String token, int playlistId) throws AuthenticationException {
         Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
             return trackDAO.getAllTracksNotInPlaylist(playlistId);
         }
-            throw new AuthenticationException("Token incorrect");
+        throw new AuthenticationException("Token incorrect");
     }
 }

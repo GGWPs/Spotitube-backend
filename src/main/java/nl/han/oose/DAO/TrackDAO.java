@@ -2,8 +2,8 @@ package nl.han.oose.DAO;
 
 
 import nl.han.oose.ConnectionFactory;
-import nl.han.oose.objects.Track;
-import nl.han.oose.objects.TrackOverview;
+import nl.han.oose.dto.Track;
+import nl.han.oose.dto.Tracks;
 
 import javax.inject.Inject;
 import java.sql.Connection;
@@ -13,13 +13,13 @@ import java.sql.SQLException;
 
 public class TrackDAO {
 
-    private TrackOverview trackOverview = new TrackOverview();
+    private Tracks tracks = new Tracks();
 
     @Inject
     private ConnectionFactory connectionFactory;
 
-    public TrackOverview getAllTracks(int playlistId) {
-        TrackOverview trackOverview = new TrackOverview();
+    public Tracks getAllTracks(int playlistId) {
+        Tracks tracks = new Tracks();
 
         try (
                 Connection connection = connectionFactory.getConnection();
@@ -30,7 +30,7 @@ public class TrackDAO {
 
             while (resultSet.next()) {
                 try {
-                    trackOverview = trackInfo(resultSet);
+                    tracks = trackInfo(resultSet);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -38,11 +38,11 @@ public class TrackDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return trackOverview;
+        return tracks;
     }
 
-    public TrackOverview getAllTracksNotInPlaylist(int playlistId) {
-        TrackOverview trackOverview = new TrackOverview();
+    public Tracks getAllTracksNotInPlaylist(int playlistId) {
+        Tracks tracks = new Tracks();
 
         try (
                 Connection connection = connectionFactory.getConnection();
@@ -53,7 +53,7 @@ public class TrackDAO {
 
             while (resultSet.next()) {
                 try {
-                    trackOverview = trackInfo(resultSet);
+                    tracks = trackInfo(resultSet);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -61,10 +61,10 @@ public class TrackDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return trackOverview;
+        return tracks;
     }
 
-    private TrackOverview trackInfo(ResultSet resultSet) throws Exception {
+    private Tracks trackInfo(ResultSet resultSet) throws Exception {
         int id = resultSet.getInt("id");
         String title = resultSet.getString("title");
         String performer = resultSet.getString("performer");
@@ -75,8 +75,8 @@ public class TrackDAO {
         String description = resultSet.getString("description");
         Boolean offlineAvailable = resultSet.getBoolean("offlineAvailable");
 
-        trackOverview.getTracks().add(new Track(id, title, performer, duration, album, playcount, publicationDate, description, offlineAvailable));
-        return trackOverview;
+        tracks.getTracks().add(new Track(id, title, performer, duration, album, playcount, publicationDate, description, offlineAvailable));
+        return tracks;
     }
 
     public void addTrackToPlaylist(int playlistId, Track track) {
