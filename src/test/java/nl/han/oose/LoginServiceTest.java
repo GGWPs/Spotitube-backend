@@ -16,7 +16,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.security.auth.login.LoginException;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static junit.framework.TestCase.assertEquals;
 
