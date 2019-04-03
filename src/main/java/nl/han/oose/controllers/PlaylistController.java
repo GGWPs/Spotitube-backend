@@ -28,7 +28,7 @@ public class PlaylistController {
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/{playlistId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editPlaylist(@QueryParam("token") String token, Playlist playlist) {
@@ -40,9 +40,9 @@ public class PlaylistController {
     }
 
     @GET
-    @Path("/{id}/tracks")
+    @Path("/{playlistId}/tracks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTracksFromPlaylist(@QueryParam("token") String token, @PathParam("id") final int id) {
+    public Response getTracksFromPlaylist(@QueryParam("token") String token, @PathParam("playlistId") final int id) {
         try {
             return Response.status(Response.Status.OK).entity(playlistService.getPlaylistTracks(token, id)).build();
         } catch (AuthenticationException e) {
@@ -62,10 +62,10 @@ public class PlaylistController {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("/{playlistId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePlaylist(@QueryParam("token") String token, @PathParam("id") int playlistId) {
+    public Response deletePlaylist(@QueryParam("token") String token, @PathParam("playlistId") int playlistId) {
         try {
             return Response.status(Response.Status.OK).entity(playlistService.deletePlaylist(token, playlistId)).build();
         } catch (AuthenticationException e) {
