@@ -57,7 +57,7 @@ public class TokenDAO {
     }
 
 
-    public Boolean checkToken(String username) {
+    public boolean checkToken(String username) {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement getTokenStatement = connection.prepareStatement("SELECT * FROM token WHERE username = ?")) {
             getTokenStatement.setString(1, username);

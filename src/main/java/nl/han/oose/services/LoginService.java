@@ -8,6 +8,9 @@ import nl.han.oose.dto.Token;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.stream.IntStream;
 
 @Default
 public class LoginService {
@@ -18,12 +21,22 @@ public class LoginService {
     private AccountDAO accountDAO;
 
     public Token login(Account user) throws LoginException {
-        if (accountDAO.accountValidation(user.getUser(), user.getPassword())) {
-            if (tokenDAO.checkToken(user.getUser())) {
-                return tokenDAO.retrieveToken(user.getUser());
-            } else {
-                return tokenDAO.createNewToken(user.getUser());
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(user.getPassword().getBytes());
+            byte[] bytes = md.digest();
+            StringBuilder sb = new StringBuilder();
+            IntStream.range(0, bytes.length).forEach(i -> sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1)));
+            user.setPassword(sb.toString());
+            if (accountDAO.accountValidation(user.getUser(), user.getPassword())) {
+                if (tokenDAO.checkToken(user.getUser())) {
+                    return tokenDAO.retrieveToken(user.getUser());
+                } else {
+                    return tokenDAO.createNewToken(user.getUser());
+                }
             }
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println(e);
         }
         throw new LoginException("Uw logingegevens zijn onjuist!");
     }
