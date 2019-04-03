@@ -33,8 +33,12 @@ public class AccountDAO {
                 query.put("username", username);
                 query.put("password", password);
                 MongoCursor<Document> cursor = collection.find(query).iterator();
-                while(cursor.hasNext()){
-                    return true;
+                try {
+                    while (cursor.hasNext()) {
+                        return true;
+                    }
+                } finally {
+                    cursor.close();
                 }
             return false;
         }

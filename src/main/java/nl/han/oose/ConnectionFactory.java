@@ -19,13 +19,14 @@ public class ConnectionFactory {
         if (properties == null) {
             properties = readProperties();
         }
+        if(mongoClient == null){
+            mongoClient = new MongoClient("localhost", 27017);
+        }
         try {
             Class.forName(properties.getProperty("pathToDriver"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-        mongoClient = new MongoClient("localhost", 27017);
     }
 
     public Connection getConnection() {
