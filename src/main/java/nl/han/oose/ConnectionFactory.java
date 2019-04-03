@@ -13,7 +13,7 @@ import java.util.Properties;
 
 public class ConnectionFactory {
     private Properties properties;
-    MongoClient mongoClient;
+    private MongoClient mongoClient;
 
     public ConnectionFactory() {
         if (properties == null) {
