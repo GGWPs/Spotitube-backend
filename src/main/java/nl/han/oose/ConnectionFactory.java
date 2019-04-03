@@ -21,9 +21,6 @@ public class ConnectionFactory {
     }
 
     public Connection getConnection() {
-        if (properties == null) {
-            properties = readProperties();
-        }
         try {
             return DriverManager.getConnection(properties.getProperty("connectionUrl"));
         } catch (SQLException e) {
