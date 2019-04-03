@@ -28,8 +28,7 @@ public class AccountDAO {
     }
 
         public boolean accountValidation(String username, String password) {
-                MongoDatabase database = connectionFactory.getDatabase();
-                MongoCollection<Document> collection = database.getCollection("account");
+                MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("account");
                 BasicDBObject query = new BasicDBObject();
                 query.put("username", username);
                 query.put("password", password);
