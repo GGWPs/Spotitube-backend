@@ -60,9 +60,8 @@ public class PlaylistDAO {
     }
 
     public void editPlaylist(Playlist playlist) {
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE playlist SET naam = ? WHERE id = ?")) {
+        try (Connection connection = connectionFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement("UPDATE playlist SET name = ? WHERE id = ?")) {
             statement.setString(1, playlist.getName());
             statement.setInt(2, playlist.getId());
             statement.execute();
@@ -74,8 +73,7 @@ public class PlaylistDAO {
     public void deletePlaylist(int playlistId) {
         try (
                 Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("DELETE FROM playlist WHERE id = ?")
-        ) {
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM playlist WHERE id = ?")) {
             statement.setInt(1, playlistId);
             statement.execute();
         } catch (SQLException e) {

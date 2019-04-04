@@ -28,7 +28,7 @@ public class PlaylistController {
     }
 
     @PUT
-    @Path("/{playlistId}")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editPlaylist(@QueryParam("token") String token, Playlist playlist) {
@@ -40,9 +40,9 @@ public class PlaylistController {
     }
 
     @GET
-    @Path("/{playlistId}/tracks")
+    @Path("/{id}/tracks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTracksFromPlaylist(@QueryParam("token") String token, @PathParam("playlistId") final int id) {
+    public Response getTracksFromPlaylist(@QueryParam("token") String token, @PathParam("id") final int id) {
         try {
             return Response.status(Response.Status.OK).entity(playlistService.getPlaylistTracks(token, id)).build();
         } catch (AuthenticationException e) {
@@ -62,10 +62,10 @@ public class PlaylistController {
     }
 
     @DELETE
-    @Path("/{playlistId}")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePlaylist(@QueryParam("token") String token, @PathParam("playlistId") int playlistId) {
+    public Response deletePlaylist(@QueryParam("token") String token, @PathParam("id") int playlistId) {
         try {
             return Response.status(Response.Status.OK).entity(playlistService.deletePlaylist(token, playlistId)).build();
         } catch (AuthenticationException e) {
@@ -74,22 +74,22 @@ public class PlaylistController {
     }
 
     @POST
-    @Path("/{playlistId}/tracks")
+    @Path("/{id}/tracks")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTrackToPlaylist(@QueryParam("token") String token, @PathParam("playlistId") int playlistId, Track tracks) {
+    public Response addTrackToPlaylist(@QueryParam("token") String token, @PathParam("id") int playlistId, Track track) {
         try {
-            return Response.status(Response.Status.OK).entity(playlistService.addTrackToPlaylist(token, playlistId, tracks)).build();
+            return Response.status(Response.Status.OK).entity(playlistService.addTrackToPlaylist(token, playlistId, track)).build();
         } catch (AuthenticationException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
 
     @DELETE
-    @Path("/{playlistId}/tracks/{trackId}")
+    @Path("/{id}/tracks/{trackId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteTrack(@QueryParam("token") String token, @PathParam("playlistId") int playlistId, @PathParam("trackId") int trackId) {
+    public Response deleteTrack(@QueryParam("token") String token, @PathParam("id") int playlistId, @PathParam("trackId") int trackId) {
         try {
             return Response.status(Response.Status.OK).entity(playlistService.deleteTrack(token, playlistId, trackId)).build();
         } catch (AuthenticationException e) {
