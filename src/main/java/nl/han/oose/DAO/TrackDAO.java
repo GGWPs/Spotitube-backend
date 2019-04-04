@@ -21,13 +21,10 @@ public class TrackDAO {
     public Tracks getAllTracks(int playlistId) {
         Tracks tracks = new Tracks();
 
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM track INNER JOIN tracksinplaylist ON id = track_id WHERE playlist_id = ?")
-        ) {
+        try (Connection connection = connectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM track INNER JOIN tracksinplaylist ON id = track_id WHERE playlist_id = ?")) {
             statement.setInt(1, playlistId);
             ResultSet resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
                 try {
                     tracks = trackInfo(resultSet);

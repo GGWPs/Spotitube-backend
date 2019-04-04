@@ -15,16 +15,11 @@ public class TokenDAO {
     @Inject
     private ConnectionFactory connectionFactory;
 
-    public Token createNewToken(String username) {
+    public Token createNewToken(String username, String token) {
         Token userToken;
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "INSERT INTO token (token, username) VALUES (?,?)")) {
-            Random random = new Random();
-            String token = String.format("%04d", random.nextInt(10000));
-            for (int i = 0; i < 2; i++) {
-                token += "-" + String.format("%04d", random.nextInt(10000));
-            }
             preparedStatement.setString(1, token);
             preparedStatement.setString(2, username);
             preparedStatement.execute();

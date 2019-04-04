@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 @Default
@@ -32,7 +33,12 @@ public class LoginService {
                 if (tokenDAO.checkToken(user.getUser())) {
                     return tokenDAO.retrieveToken(user.getUser());
                 } else {
-                    return tokenDAO.createNewToken(user.getUser());
+                    Random random = new Random();
+                    String randomToken = String.format("%04d", random.nextInt(10000));
+                    for (int i = 0; i < 2; i++) {
+                        randomToken += "-" + String.format("%04d", random.nextInt(10000));
+                    }
+                    return tokenDAO.createNewToken(user.getUser(), randomToken);
                 }
             }
         } catch (NoSuchAlgorithmException e) {
