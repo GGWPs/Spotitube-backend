@@ -30,14 +30,21 @@ public class Track {
     public int getId() {
         return id;
     }
+    public void setId(int id){
+        this.id=id;
+    }
 
     public boolean getOfflineAvailable() {
         return offlineAvailable;
+    }
+    public void setOfflineAvailable(boolean offlineAvailable) {
+        this.offlineAvailable = offlineAvailable;
     }
 
     public String getPublicationDate() {
         return publicationDate;
     }
+
 
     public void setPublicationDate(String publicationDate) {
         this.publicationDate = publicationDate;
@@ -85,5 +92,8 @@ public class Track {
 
     public String getDescription() {
         return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
