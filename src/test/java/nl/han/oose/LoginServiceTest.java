@@ -42,7 +42,7 @@ public class LoginServiceTest {
         Account account = new Account("test", "test123");
         Token userToken = new Token("1234-1234-1234", "test");
         when(accountDAO.accountValidation(any(),any())).thenReturn(true);
-        when(tokenDAO.createNewToken(any())).thenReturn(userToken);
+        when(tokenDAO.createNewToken(any(), any())).thenReturn(userToken);
 
         //TEST
         Token token = sut.login(account);

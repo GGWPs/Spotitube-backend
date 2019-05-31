@@ -1,14 +1,13 @@
 package nl.han.oose.DAO;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import nl.han.oose.ConnectionFactory;
 import nl.han.oose.dto.Token;
+import org.bson.Document;
 
 import javax.inject.Inject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Random;
 
 public class TokenDAO {
 
@@ -16,86 +15,59 @@ public class TokenDAO {
     private ConnectionFactory connectionFactory;
 
     public Token createNewToken(String token, String username) {
-        Token userToken;
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO token (token, username) VALUES (?,?)")) {
-            preparedStatement.setString(1, token);
-            preparedStatement.setString(2, username);
-            preparedStatement.execute();
-            userToken = new Token(token, username);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("token");
+        Document newToken = new Document("token", token).append("username", username);
+        collection.insertOne(newToken);
+        Token userToken = new Token(token, username);
         return userToken;
     }
 
 
     public boolean tokenValidation(Token userToken) {
-        boolean isValid = false;
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                        "SELECT * FROM token WHERE token = ? AND username = ?");
-        ) {
-            preparedStatement.setString(1, userToken.getToken());
-            preparedStatement.setString(2, userToken.getUser());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                isValid = true;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return isValid;
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("token");
+        BasicDBObject query = new BasicDBObject();
+        query.put("token", userToken.getToken());
+        query.put("username", userToken.getUser());
+        return isInDatabase(collection.find(query).iterator());
     }
 
 
     public boolean checkToken(String username) {
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement getTokenStatement = connection.prepareStatement("SELECT * FROM token WHERE username = ?")) {
-            getTokenStatement.setString(1, username);
-            ResultSet resultSet = getTokenStatement.executeQuery();
-            while (resultSet.next()) {
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("token");
+        BasicDBObject query = new BasicDBObject();
+        query.put("username", username);
+        return isInDatabase(collection.find(query).iterator());
+    }
+
+    private boolean isInDatabase(MongoCursor<Document> query){
+        try {
+            if (query.hasNext()){
                 return true;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } finally {
+            query.close();
         }
         return false;
     }
 
     public Token getTokenObject(String token) {
-        Token userToken = null;
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement getTokenStatement = connection.prepareStatement("SELECT * FROM token WHERE token = ?")) {
-            getTokenStatement.setString(1, token);
-            ResultSet resultSet = getTokenStatement.executeQuery();
-            while (resultSet.next()) {
-                String tokenString = resultSet.getString("token");
-                String user = resultSet.getString("username");
-                userToken = new Token(tokenString, user);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("token");
+        BasicDBObject query = new BasicDBObject();
+        query.put("token", token);
+        MongoCursor<Document> result = collection.find(query).iterator();
+        Document queryResult = result.next();
+        Token userToken = new Token(token, queryResult.get("username").toString());
         return userToken;
     }
 
     public Token retrieveToken(String username) {
-        Token userToken = null;
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement tokenStatement = connection.prepareStatement("SELECT * FROM token WHERE username = ?")) {
-            tokenStatement.setString(1, username);
-            ResultSet resultSet = tokenStatement.executeQuery();
-            while (resultSet.next()) {
-                String tokenString = resultSet.getString("token");
-                String user = resultSet.getString("username");
-                userToken = new Token(tokenString, user);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("token");
+        BasicDBObject query = new BasicDBObject();
+        query.put("username", username);
+        MongoCursor<Document> result = collection.find(query).iterator();
+        Document queryResult = result.next();
+        Token userToken = new Token(queryResult.get("token").toString(), username);
         return userToken;
     }
+
 }

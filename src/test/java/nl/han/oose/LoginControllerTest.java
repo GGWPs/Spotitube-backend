@@ -36,6 +36,7 @@ public class LoginControllerTest {
         Account account = new Account("", "");
         account.setUser(TESTUSER);
         account.setPassword(TESTPASS);
+
         //TEST
         Response loginResponse = loginController.login(account);
 
