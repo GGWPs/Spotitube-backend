@@ -1,10 +1,17 @@
 package nl.han.oose.DAO;
 
 import nl.han.oose.ConnectionFactory;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.Transaction;
+import org.neo4j.driver.TransactionWork;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static org.neo4j.driver.Values.parameters;
 
 
 public class AccountDAO {
@@ -16,17 +23,18 @@ public class AccountDAO {
     }
 
         public boolean accountValidation(String username, String password) {
-            try (Connection connection = connectionFactory.getConnection();
-                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM account WHERE username = ? AND password = ?")) {
-                statement.setString(1, username);
-                statement.setString(2, password);
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    return true;
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            try (Session session = connectionFactory.getNeo4JConnection().session() )
+            {
+                String user = session.writeTransaction(new TransactionWork<String>() {
+                    @Override
+                    public String execute(Transaction transaction) {
+                        Result result = transaction.run( "MATCH (a:Account {username: $username, password: $password}) RETURN a.username",
+                                parameters( "username", username,"password", password ));
+                        return result.single().get( 0 ).asString();
+                    }
+                });
+
+                return user != null;
             }
-            return false;
         }
 }

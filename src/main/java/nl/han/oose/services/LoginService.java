@@ -29,7 +29,10 @@ public class LoginService {
             StringBuilder sb = new StringBuilder();
             IntStream.range(0, bytes.length).forEach(i -> sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1)));
             user.setPassword(sb.toString());
+            long startTime = System.nanoTime();
             if (accountDAO.accountValidation(user.getUser(), user.getPassword())) {
+                long endTime = System.nanoTime();
+                System.out.println((endTime - startTime) / 1000000);
                 if (tokenDAO.checkToken(user.getUser())) {
                     return tokenDAO.retrieveToken(user.getUser());
                 } else {
