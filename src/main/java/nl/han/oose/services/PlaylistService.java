@@ -23,7 +23,11 @@ public class PlaylistService {
     public Tracks getPlaylistTracks(String token, int playlistId) throws AuthenticationException {
         Token userToken = tokenDAO.getTokenObject(token);
         if (tokenDAO.tokenValidation(userToken)) {
-            return trackDAO.getAllTracks(playlistId);
+            long startTime = System.nanoTime();
+            Tracks tracks = trackDAO.getAllTracks(playlistId);
+            long endTime = System.nanoTime();
+            System.out.println((endTime - startTime) / 1000000);
+            return tracks;
         } else {
             throw new AuthenticationException("Token incorrect");
         }
