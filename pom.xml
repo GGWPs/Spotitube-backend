@@ -7,7 +7,6 @@
     <packaging>war</packaging>
 
     <name>Spotitube</name>
-
     <dependencies>
         <dependency>
             <groupId>org.hamcrest</groupId>

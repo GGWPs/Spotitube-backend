@@ -1,7 +1,11 @@
 package nl.han.oose.DAO;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import nl.han.oose.ConnectionFactory;
 import nl.han.oose.dto.Token;
+import org.bson.Document;
 
 import javax.inject.Inject;
 import java.sql.Connection;
@@ -31,36 +35,68 @@ public class TokenDAO {
     }
 
 
+//    public boolean tokenValidation(Token userToken) {
+//        boolean isValid = false;
+//        try (
+//                Connection connection = connectionFactory.getConnection();
+//                PreparedStatement preparedStatement = connection.prepareStatement(
+//                        "SELECT * FROM token WHERE token = ? AND username = ?");
+//        ) {
+//            preparedStatement.setString(1, userToken.getToken());
+//            preparedStatement.setString(2, userToken.getUser());
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            while (resultSet.next()) {
+//                isValid = true;
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return isValid;
+//    }
+
     public boolean tokenValidation(Token userToken) {
-        boolean isValid = false;
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                        "SELECT * FROM token WHERE token = ? AND username = ?");
-        ) {
-            preparedStatement.setString(1, userToken.getToken());
-            preparedStatement.setString(2, userToken.getUser());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                isValid = true;
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("token");
+        BasicDBObject query = new BasicDBObject();
+        query.put("token", userToken.getToken());
+        query.put("username", userToken.getUser());
+        MongoCursor<Document> cursor = collection.find(query).iterator();
+            try {
+                while (cursor.hasNext()) {
+                    return true;
+                }
+            } finally {
+                cursor.close();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return isValid;
+        return false;
     }
 
 
+//    public boolean checkToken(String username) {
+//        try (Connection connection = connectionFactory.getConnection();
+//             PreparedStatement getTokenStatement = connection.prepareStatement("SELECT * FROM token WHERE username = ?")) {
+//            getTokenStatement.setString(1, username);
+//            ResultSet resultSet = getTokenStatement.executeQuery();
+//            while (resultSet.next()) {
+//                return true;
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return false;
+//    }
+
+
     public boolean checkToken(String username) {
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement getTokenStatement = connection.prepareStatement("SELECT * FROM token WHERE username = ?")) {
-            getTokenStatement.setString(1, username);
-            ResultSet resultSet = getTokenStatement.executeQuery();
-            while (resultSet.next()) {
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("token");
+        BasicDBObject query = new BasicDBObject();
+        query.put("username", username);
+        MongoCursor<Document> cursor = collection.find(query).iterator();
+        try {
+            while (cursor.hasNext()) {
                 return true;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } finally {
+            cursor.close();
         }
         return false;
     }
@@ -82,20 +118,37 @@ public class TokenDAO {
         return userToken;
     }
 
+//    public Token retrieveToken(String username) {
+//        Token userToken = null;
+//        try (Connection connection = connectionFactory.getConnection();
+//             PreparedStatement tokenStatement = connection.prepareStatement("SELECT * FROM token WHERE username = ?")) {
+//            tokenStatement.setString(1, username);
+//            ResultSet resultSet = tokenStatement.executeQuery();
+//            while (resultSet.next()) {
+//                String tokenString = resultSet.getString("token");
+//                String user = resultSet.getString("username");
+//                userToken = new Token(tokenString, user);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return userToken;
+//    }
+
     public Token retrieveToken(String username) {
         Token userToken = null;
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement tokenStatement = connection.prepareStatement("SELECT * FROM token WHERE username = ?")) {
-            tokenStatement.setString(1, username);
-            ResultSet resultSet = tokenStatement.executeQuery();
-            while (resultSet.next()) {
-                String tokenString = resultSet.getString("token");
-                String user = resultSet.getString("username");
-                userToken = new Token(tokenString, user);
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("token");
+        BasicDBObject query = new BasicDBObject();
+        query.put("username", username);
+        MongoCursor<Document> cursor = collection.find(query).iterator();
+            try {
+                while (cursor.hasNext()) {
+                    Document doc = cursor.next();
+                    userToken = new Token(doc.getString("token"), doc.getString("username"));
+                }
+            } finally {
+                cursor.close();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
         return userToken;
     }
 }
