@@ -1,9 +1,13 @@
 package nl.han.oose.DAO;
 
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import nl.han.oose.ConnectionFactory;
 import nl.han.oose.dto.Track;
 import nl.han.oose.dto.Tracks;
+import org.bson.Document;
 
 import javax.inject.Inject;
 import java.sql.Connection;
@@ -20,23 +24,23 @@ public class TrackDAO {
 
     public Tracks getAllTracks(int playlistId) {
         Tracks tracks = new Tracks();
-
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM track INNER JOIN tracksinplaylist ON id = track_id WHERE playlist_id = ?")
-        ) {
-            statement.setInt(1, playlistId);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                try {
-                    tracks = trackInfo(resultSet);
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        MongoCollection<Document> collection = connectionFactory.getDatabase().getCollection("track");
+        BasicDBObject query = new BasicDBObject();
+        query.put("playlistId", playlistId);
+        MongoCursor<Document> cursor = collection.find(query).iterator();
+        while (cursor.hasNext()) {
+            Document document = cursor.next();
+            Track track = new Track(document.getInteger("id"),
+                    document.getString("title"),
+                    document.getString("performer"),
+                    document.getInteger("duration"),
+                    document.getString("album"),
+                    document.getInteger("playcount"),
+                    document.getDate("publicationDate").toString(),
+                    document.getString("description"),
+                    document.getBoolean("offlineAvailable")
+                    );
+            tracks.getTracks().add(track);
         }
         return tracks;
     }
